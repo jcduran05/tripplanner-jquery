@@ -139,4 +139,50 @@ $('#day-list').on('click', '.day-btn', function(){
 // 	this.activity = choice;
 // }
 
-// $('').on('click', function(){console.log('you clicked!')}) 
+activitySelect.append(activityHtml);
+
+
+
+/////////////////////click event   {}
+var entireTrip = []; 
+
+
+$('#day-add').on('click', function(){
+	
+
+
+	entireTrip.push(new DayOfTrip)
+	console.log (entireTrip);
+}) 
+
+var DayOfTrip = function (){
+	this.hotelList = [];
+	this.restaurantList = [];
+	this.activityList = []; 
+	var self = this;
+	$('#addH').on('click', function(){
+		self.hotelList.push($('select[data-type="hotel"] :selected').text() )
+		console.log(self.hotelList)
+		console.log(entireTrip)
+	})
+
+
+// 	$('#addR').on('click', function(){
+// 	$('#addA').on('click', function(){
+
+}
+
+// DayOfTrip.prototype.myHotel(choice){
+// 	this.hotel = choice;
+// }
+
+
+// DayOfTrip.prototype.myRestaurants(choice){
+// 	this.restaurant = choice;
+// }
+
+
+// DayOfTrip.prototype.myHotel(choice){
+// 	this.activity = choice;
+// }
+
