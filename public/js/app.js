@@ -65,6 +65,9 @@ $dayAdd.on('click', function(){
     $hotelItems.text('');
     $restaurantItems.text('');
     $activityItems.text('');
+
+   
+    $('#day-title').text('').append('<span> Day ' +entireTrip.length + '</span><button class="btn btn-xs btn-danger remove btn-circle">x</button>')
 });
 
 // SELECT TAGS ADD FUNCTIONALITY
@@ -76,7 +79,7 @@ $('#addH').on('click', function(elem) {
     var selectValue = $('select[data-type="hotel"] :selected').text();
 
     entireTrip[currentDay.index].hotelList.push(selectValue);
-    $hotelItems.append('<span class="title">' + selectValue + '</span><button class="btn btn-xs btn-danger remove btn-circle">x</button>');
+    $hotelItems.append('<div id ="'+((entireTrip[currentDay.index].hotelList.length)-1)+'"><span class="title">' + selectValue + '</span><button class="btn btn-xs btn-danger remove btn-circle">x</button></div>');
     // console.log(entireTrip);
 });
 
@@ -85,8 +88,8 @@ $('#addR').on('click', function(elem) {
     var currentDay = $('#day-list .current-day').data();
     var selectValue = $('select[data-type="restaurant"] :selected').text();
 
-        .restaurantList.push(selectValue);
-    $restaurantItems.append('<span class="title">' + selectValue + '</span><button class="btn btn-xs btn-danger remove btn-circle">x</button>');
+    entireTrip[currentDay.index].restaurantList.push(selectValue);
+    $restaurantItems.append('<div id ="'+((entireTrip[currentDay.index].restaurantList.length)-1)+'"><span class="title">' + selectValue + '</span><button class="btn btn-xs btn-danger remove btn-circle">x</button></div>');
     // console.log(entireTrip);
 });
 
@@ -96,7 +99,7 @@ $('#addA').on('click', function(elem) {
     var selectValue = $('select[data-type="activity"] :selected').text();
 
     entireTrip[currentDay.index].activityList.push(selectValue);
-    $activityItems.append('<span class="title">' + selectValue + '</span><button class="btn btn-xs btn-danger remove btn-circle">x</button>');
+    $activityItems.append('<div id ="'+((entireTrip[currentDay.index].activityList.length)-1)+'"><span class="title">' + selectValue + '</span><button class="btn btn-xs btn-danger remove btn-circle">x</button></div>');
     // console.log(entireTrip);
 });
 
@@ -117,12 +120,34 @@ $('#day-list').on('click', '.day-btn', function(){
     // Clear lists (my hotel, restaurant, activities)
     // and populate it with its data
     var currentDay = $('#day-list .current-day').data();
-    var curretnDayObj = entireTrip[currentDay.index];
+    var currentDayObj = entireTrip[currentDay.index];
 
-    // curretnDayObj.hotelList
+
+    //clear itenerary 
+    $hotelItems.text('');
+    $restaurantItems.text('');
+    $activityItems.text('');
+   
+   for (var i = 0; i < currentDayObj.hotelList.length; i++){
+    	
+    	$hotelItems.append('<div id ="'+ i+'"><span class="title">' + currentDayObj.hotelList[i] + '</span><button class="btn btn-xs btn-danger remove btn-circle">x</button></div>');
+    }
+    for (var i = 0; i < currentDayObj.restaurantList.length; i++){
+    	
+    	$restaurantItems.append('<div id ="'+ i+'"><span class="title">' + currentDayObj.restaurantList[i] + '</span><button class="btn btn-xs btn-danger remove btn-circle">x</button></div>');
+    }
+    for (var i = 0; i < currentDayObj.activityList.length; i++){
+    	
+    	$activityItems.append('<div id ="'+ i+'"><span class="title">' + currentDayObj.activityList[i] + '</span><button class="btn btn-xs btn-danger remove btn-circle">x</button></div>');
+    }
+
+
+    $('#day-title').text('').append('<span> Day ' + parseInt(currentDay.index +1) + '</span><button class="btn btn-xs btn-danger remove btn-circle">x</button>')
 });
 
-// UPDATE/DISPLAY itinerary DAY
+
+
+ // UPDATE/DISPLAY itinerary DAY
 ////////////////////////////////////
 
 // DayOfTrip.prototype.myHotel(choice){
@@ -139,7 +164,7 @@ $('#day-list').on('click', '.day-btn', function(){
 // 	this.activity = choice;
 // }
 
-activitySelect.append(activityHtml);
+// activitySelect.append(activityHtml);
 
 
 
@@ -185,4 +210,21 @@ var DayOfTrip = function (){
 // DayOfTrip.prototype.myHotel(choice){
 // 	this.activity = choice;
 // }
+
+///////////////////////DELETE 
+
+
+// $restaurantItems.append('<div id ="'+ i+'"><span class="title">' + currentDayObj.restaurantList[i] + '</span><button class="btn btn-xs btn-danger remove btn-circle">x</button></div>');
+
+
+
+
+$('.itinerary-item').on('click', '.remove', function(){
+	
+	
+	console.log($(this).parent());
+	var id =($(this).parent().attr('id'))
+	$(this).parent().remove()
+
+})
 
