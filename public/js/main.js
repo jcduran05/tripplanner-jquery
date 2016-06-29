@@ -46,6 +46,23 @@ $(function initializeMap (){
     activity: '/images/star-3.png'
   };
 
+  var markers = []; 
+  function addMarker(type, location){
+    var iconURL = iconURLs[type] 
+
+    var marker = new google.maps.Marker({
+        icon: iconURL,
+        position: new google.maps.LatLng(location[0], location[1])
+        // map: currentMap
+    
+
+    })
+    markers.push(marker)
+  }
+
+
+
+
   // Sets the map on all markers in the array.
   function setMapOnAll(map) {
     for (var i = 0; i < markers.length; i++) {
@@ -56,6 +73,7 @@ $(function initializeMap (){
   // Removes the markers from the map, but keeps them in the array.
   function clearMarkers() {
     setMapOnAll(null);
+    markers = []; 
   }
 
   function drawMarker (type, coords) {
@@ -122,6 +140,7 @@ $(function initializeMap (){
   var $dayAdd = $('#day-add');
   var $dayList = $('#day-list');
   $dayAdd.on('click', function(){
+      clearMarkers(); 
       entireTrip.push(new DayOfTrip);
       $dayList.text('');
 
@@ -158,7 +177,10 @@ $(function initializeMap (){
 
       // Add to map
       var hotelObj = hotels[$('select[data-type="hotel"] :selected').val()];
-      drawMarker('hotel', hotelObj.place.location);
+      // drawMarker('hotel', hotelObj.place.location);
+      addMarker('hotel' ,hotelObj.place.location);
+      setMapOnAll(currentMap);
+      console.log(hotelObj.place.location)
 
       // Add items to object
       entireTrip[currentDay.index].hotelListObj[selectValue] = hotelObj.place.location;
@@ -175,8 +197,11 @@ $(function initializeMap (){
       // console.log(entireTrip);
 
       // Add to map
-      var restaurantObj = restaurants[$('select[data-type="hotel"] :selected').val()];
-      drawMarker('restaurant', restaurantObj.place.location);
+      var restaurantObj = restaurants[$('select[data-type="restaurant"] :selected').val()];
+      // drawMarker('restaurant', restaurantObj.place.location);
+      addMarker('restaurant', restaurantObj.place.location);
+      setMapOnAll(currentMap);
+      console.log(restaurantObj.place.location)
 
       // Add items to object
       entireTrip[currentDay.index].restaurantListObj[selectValue] = restaurantObj.place.location;
@@ -193,8 +218,11 @@ $(function initializeMap (){
       // console.log(entireTrip);
 
       // Add to map
-      var activityObj = activities[$('select[data-type="hotel"] :selected').val()];
-      drawMarker('activity', activityObj.place.location);
+      var activityObj = activities[$('select[data-type="activity"] :selected').val()];
+      // drawMarker('activity', activityObj.place.location);
+      addMarker('activity', activityObj.place.location);
+      setMapOnAll(currentMap);
+      console.log(activityObj.place.location)
 
       // Add items to object
       entireTrip[currentDay.index].activityListObj[selectValue] = activityObj.place.location;
@@ -203,7 +231,14 @@ $(function initializeMap (){
   // CHANGE CURRENT DAY
   ////////////////////////////////////
   $('#day-list').on('click', '.day-btn', function(){
+      
 
+      clearMarkers();
+      // for (locations in hotelListObj){
+        // addMarker('hotel', location)
+      
+      
+      setMapOnAll(currentMap);
       // Remove 'current-day' class from the list of buttons
       $('#day-list button').each(function(index, elem) {
           if ($(elem).hasClass(('current-day'))) {
@@ -218,7 +253,21 @@ $(function initializeMap (){
       // and populate it with its data
       var currentDay = $('#day-list .current-day').data();
       var currentDayObj = entireTrip[currentDay.index];
+      
 
+      for (var property in currentDayObj.hotelListObj){
+        addMarker('hotel', currentDayObj.hotelListObj[property])
+      }
+      
+      for (var property in currentDayObj.restaurantListObj){
+        addMarker('restaurant', currentDayObj.restaurantListObj[property])
+      }
+
+      for (var property in currentDayObj.activityListObj){
+        addMarker('activity', currentDayObj.activityListObj[property])
+      }
+    
+      setMapOnAll(currentMap);
 
       //clear itenerary
       $hotelItems.text('');
@@ -248,6 +297,7 @@ $(function initializeMap (){
       entireTrip.splice(currentDay.index, 1);
 
       $dayList.text('');
+      clearMarkers(); 
 
       // data-index property added to all buttons
       for (var i = 0; i < entireTrip.length; i++) {
@@ -265,6 +315,8 @@ $(function initializeMap (){
       $hotelItems.text('');
       $restaurantItems.text('');
       $activityItems.text('');
+  
+
       for (var i = 0; i < currentDayObj.hotelList.length; i++){
           $hotelItems.append('<div id ="' + i + '" class="hotel-tag"><span class="title">' + currentDayObj.hotelList[i] + '</span><button class="btn btn-xs btn-danger remove btn-circle">x</button></div>');
       }
@@ -285,16 +337,44 @@ $(function initializeMap (){
       var $htmlData = $(this).parent();
 
       // Remove item from obj
-      if ($htmlData.hasClass('hotel-tag')) entireTrip[currentDay.index].hotelList.splice(id, 1)
-      if ($htmlData.hasClass('restaurant-tag')) entireTrip[currentDay.index].restaurantList.splice(id, 1)
-      if ($htmlData.hasClass('activity-tag')) entireTrip[currentDay.index].activityList.splice(id, 1)
+      if ($htmlData.hasClass('hotel-tag')){
+        
+        var saveVal = entireTrip[currentDay.index].hotelList[id]
+        entireTrip[currentDay.index].hotelList.splice(id, 1)
+
+        delete entireTrip[currentDay.index].hotelListObj[saveVal] 
+        
+        
+      }
+      
+      if ($htmlData.hasClass('restaurant-tag')){
+        
+        var saveVal = entireTrip[currentDay.index].restaurantList[id]
+        entireTrip[currentDay.index].restaurantList.splice(id, 1)
+
+        delete entireTrip[currentDay.index].restaurantListObj[saveVal] 
+        
+        
+      }
+      
+      if ($htmlData.hasClass('activity-tag')){
+        var saveVal = entireTrip[currentDay.index].activityList[id]
+        entireTrip[currentDay.index].activityList.splice(id, 1)
+
+        delete entireTrip[currentDay.index].activityListObj[saveVal] 
+        
+        
+      }
 
 
 
       // Removes html element
     $htmlData.remove()
-      console.log(entireTrip);
-  });
+      
+      });
 
 
 });
+
+
+
